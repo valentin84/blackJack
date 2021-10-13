@@ -30,10 +30,8 @@ const endGameInfo = document.querySelector('.endGameInfo');
 let sitJson = {};
 let betValue;
 let sessionId;
-let dealJson = {}
 let actionValue;
-let turnJson = {};
-let standJson = {}
+
 
 // Actions Function Definition
 
