@@ -29,6 +29,7 @@ const endGameInfo = document.querySelector('.endGameInfo');
 
 let sitJson = {};
 let betValue;
+let sessionId;
 let dealJson = {}
 let actionValue;
 let turnJson = {};
@@ -68,11 +69,23 @@ function setBetValue(e) {
     if(!isButton) {
         return
     }
-    betValue = e.target.textContent
-    deal();
+    betValue = e.target.textContent;
+    if(((sitJson.currentBalance >= betValue) || (typeof sitJson.currentBalance === "undefined")) ) {
+        deal();
+        cards.style.display = 'block';
+        placeBet.style.display = 'none';
+    } else {
+        alert("no more cash")
+        sitContainer.style.display = 'flex';
+        newRound.style.display = 'none';
+        endGameInfo.style.display = 'flow-root';
+        placeBet.style.display = 'none';
+        cards.style.display = 'none';
+        stand();
+    }
+    
 
-    cards.style.display = 'block';
-    placeBet.style.display = 'none';
+    
 
 }
 
@@ -89,7 +102,7 @@ function doAction(e) {
 function standAction() {
     sitContainer.style.display = 'flex';
     newRound.style.display = 'none';
-    endGameInfo.style.display = 'flow-root'
+    endGameInfo.style.display = 'flow-root';
     stand()
 }
 
@@ -100,10 +113,11 @@ async function sit() {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({
-            "balance": 500
+            "balance": 100
         })
     }).catch(handleError);
     sitJson = await sitResponse.json();
+    sessionId = sitJson.sessionId
 }
 
 async function deal() {
@@ -112,20 +126,19 @@ async function deal() {
         headers: headers,
         body: JSON.stringify({
             "bet": betValue,
-            "sessionId": sitJson.sessionId
+            "sessionId": sessionId
         })
     }).catch(handleError);
-    dealJson = await dealResponse.json();
-
+    sitJson = await dealResponse.json();
     // Display Both Players Cards
     dealerCards.innerHTML = ""
     const firstLine = document.createElement('p');
-    firstLine.textContent = JSON.stringify(dealJson.dealerCards);
+    firstLine.textContent = JSON.stringify(sitJson.dealerCards);
     dealerCards.appendChild(firstLine);
    
     playerCards.innerHTML = ""
     const secondLine = document.createElement('p');
-    secondLine.textContent = JSON.stringify(dealJson.playerCards)
+    secondLine.textContent = JSON.stringify(sitJson.playerCards)
     playerCards.appendChild(secondLine);
 }
 async function turn() {
@@ -134,26 +147,26 @@ async function turn() {
         headers: headers,
         body: JSON.stringify({
             "action": actionValue,
-            "sessionId": sitJson.sessionId
+            "sessionId": sessionId
         })
-    })
-    turnJson = await turnResponse.json();
-
+    }).catch(handleError);
+    sitJson = await turnResponse.json();
+    console.log(sitJson);
     // Add cards 
 
     const firsLine = document.createElement('p');
-    firsLine.textContent = JSON.stringify(turnJson.dealerCards)
+    firsLine.textContent = JSON.stringify(sitJson.dealerCards)
     dealerCards.appendChild(firsLine);
     const secondLine = document.createElement('p');
-    secondLine.textContent = JSON.stringify(turnJson.playerCard)
+    secondLine.textContent = JSON.stringify(sitJson.playerCard)
     playerCards.appendChild(secondLine);
 
     // if round ended
-    if(turnJson.roundEnded == true) {
+    if(sitJson.roundEnded == true) {
         newRound.style.display = 'flex';
         cards.style.display = 'none';
         balanceContainer.style.display = 'block';
-        balanceValue.textContent = turnJson.currentBalance
+        balanceValue.textContent = sitJson.currentBalance
     }
 
 }
@@ -162,15 +175,15 @@ async function stand() {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({
-            "sessionId": sitJson.sessionId
+            "sessionId": sessionId
         })
-    })
-    standJson = await turnResponse.json();
+    }).catch(handleError);
+    sitJson = await turnResponse.json();
 
     //Populate Round and Balance
 
-    roundsPlayed.textContent = standJson.roundsPlayed;
-    standBalance.textContent = standJson.winAmount;
+    roundsPlayed.textContent = sitJson.roundsPlayed;
+    standBalance.textContent = sitJson.winAmount;
 }
 
 //Function calls
