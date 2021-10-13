@@ -1,0 +1,76 @@
+.table {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 800px;
+    height: 800px;
+    background-color: green;
+    margin: 0 auto;
+}
+.sit {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex-direction: column;
+}
+#sit, #deal, #stand {
+    width: 150px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 50px;
+}
+#sit, #deal {
+    background-color: red;
+}
+#stand {
+    background-color:grey;
+}
+
+.endGameInfo {
+    display: none;
+}
+
+
+.newRound {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+}
+.balance {
+    display: none;
+    padding-bottom: 30px;
+}
+.placeBet {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+}
+.placeBet button {
+    width: 75px;
+    height: 50px;
+    cursor: pointer;
+}
+.cards {
+    display: none;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+}
+.dealerCards, .playerCards, .actions {
+    display: flex;
+    width: 100%;
+    height: 33%;
+    align-items: center;
+    justify-content: center;
+}
+
+#hit, #stay {
+    width: 100px;
+    height: 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: capitalize;
+}
