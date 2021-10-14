@@ -111,7 +111,7 @@ async function sit() {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({
-            "balance": 100
+            "balance": 400
         })
     }).catch(handleError);
     sitJson = await sitResponse.json();
